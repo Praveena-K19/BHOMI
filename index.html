@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BHOOMI-Net 2.0 | Autonomous Multi-Hazard Early Warning & AI Afforestation Engine</title>
+  <meta name="description" content="Digital Twin simulation of an autonomous environmental monitoring network combining Drishti-Cam AI, multi-hazard simulation, and ecological afforestation optimization.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+  <!-- App Stylesheet -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- ====================================================================
+       TOP HEADER & COMMAND BAR
+       ==================================================================== -->
+  <header class="header-bar">
+    <div class="brand-section">
+      <div class="brand-logo-hex">🌳</div>
+      <div class="brand-text">
+        <h1>BHOOMI-Net <span class="version-tag">v2.0 DIGITAL TWIN</span></h1>
+        <p>Early warning, ecological intelligence & precision afforestation</p>
+      </div>
+    </div>
+
+    <div class="header-status-group">
+      <div class="status-badge simulation">
+        <span class="pulsing-dot"></span>
+        <span>● SIMULATION MODE</span>
+      </div>
+      <div class="status-badge network">
+        <span class="pulsing-dot"></span>
+        <span>LoRa NODES: 4/4 ONLINE</span>
+      </div>
+      <button class="btn-judge-demo" id="btn-judge-demo" title="Start guided presentation demonstration">
+        🏆 JUDGE DEMO MODE
+      </button>
+    </div>
+  </header>
+
+  <!-- ====================================================================
+       TOP NAVIGATION TABS
+       ==================================================================== -->
+  <nav class="nav-tab-bar">
+    <button class="nav-tab-btn active" data-tab="monitoring">📊 Live Monitoring</button>
+    <button class="nav-tab-btn" data-tab="simulation">⚡ Disaster Simulation</button>
+    <button class="nav-tab-btn" data-tab="emergency">🚨 Emergency Response</button>
+    <button class="nav-tab-btn" data-tab="drishti">📹 Drishti-Cam AI</button>
+    <button class="nav-tab-btn" data-tab="afforestation">🌱 Afforestation AI</button>
+    <button class="nav-tab-btn" data-tab="terrain">🌐 3D Digital Twin</button>
+    <button class="nav-tab-btn" data-tab="gps-map">📍 GPS Planting Map</button>
+    <button class="nav-tab-btn" data-tab="analytics">📈 Telemetry Analytics</button>
+  </nav>
+
+  <div id="monitoring-context">
+
+  <!-- ====================================================================
+       EXECUTIVE METRIC CARDS (TOP COMMAND STRIP)
+       ==================================================================== -->
+  <section class="top-metrics-grid">
+    <!-- Flood Risk Card -->
+    <div class="metric-card" style="--card-accent: var(--accent-blue);">
+      <div class="metric-header">
+        <span class="metric-title">🌧️ Flash Flood Risk</span>
+        <span class="metric-badge badge-low" id="metric-flood-badge">LOW</span>
+      </div>
+      <div class="metric-value-row">
+        <span class="metric-value" id="metric-flood-val">18%</span>
+        <span class="metric-unit">estimated</span>
+      </div>
+      <div class="metric-bar-track">
+        <div class="metric-bar-fill" id="metric-flood-bar" style="width: 18%; background: var(--accent-blue);"></div>
+      </div>
+      <div class="metric-footer">
+        <span>Catchment: 10 ha</span>
+        <span>SIMULATED DATA</span>
+      </div>
+    </div>
+
+    <!-- Wildfire Risk Card -->
+    <div class="metric-card" style="--card-accent: var(--accent-amber);">
+      <div class="metric-header">
+        <span class="metric-title">🔥 Wildfire Risk</span>
+        <span class="metric-badge badge-low" id="metric-fire-badge">LOW</span>
+      </div>
+      <div class="metric-value-row">
+        <span class="metric-value" id="metric-fire-val">12%</span>
+        <span class="metric-unit">estimated</span>
+      </div>
+      <div class="metric-bar-track">
+        <div class="metric-bar-fill" id="metric-fire-bar" style="width: 12%; background: var(--accent-amber);"></div>
+      </div>
+      <div class="metric-footer">
+        <span>Fuel Moisture: 14%</span>
+        <span>SIMULATED DATA</span>
+      </div>
+    </div>
+
+    <!-- Landslide Risk Card -->
+    <div class="metric-card" style="--card-accent: var(--accent-red);">
+      <div class="metric-header">
+        <span class="metric-title">⛰️ Landslide Risk</span>
+        <span class="metric-badge badge-low" id="metric-slide-badge">LOW</span>
+      </div>
+      <div class="metric-value-row">
+        <span class="metric-value" id="metric-slide-val">23%</span>
+        <span class="metric-unit">estimated</span>
+      </div>
+      <div class="metric-bar-track">
+        <div class="metric-bar-fill" id="metric-slide-bar" style="width: 23%; background: var(--accent-red);"></div>
+      </div>
+      <div class="metric-footer">
+        <span>Slope: 26.4° grade</span>
+        <span>SIMULATED DATA</span>
+      </div>
+    </div>
+
+    <!-- Canopy Coverage / Health Card -->
+    <div class="metric-card" style="--card-accent: var(--accent-green);">
+      <div class="metric-header">
+        <span class="metric-title">🌳 Canopy Coverage</span>
+        <span class="metric-badge badge-med" id="metric-canopy-badge">MODERATE</span>
+      </div>
+      <div class="metric-value-row">
+        <span class="metric-value" id="metric-canopy-val">24.2%</span>
+        <span class="metric-unit">bare soil: 75.8%</span>
+      </div>
+      <div class="metric-bar-track">
+        <div class="metric-bar-fill" id="metric-canopy-bar" style="width: 24.2%; background: var(--accent-green);"></div>
+      </div>
+      <div class="metric-footer">
+        <span>Target: 68.5%</span>
+        <span>SIMULATED ENVIRONMENT</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================================
+       NARRATIVE PIPELINE RIBBON (HAZARD TO RESTORATION FLOW)
+       ==================================================================== -->
+  <section class="narrative-pipeline-section">
+    <div class="pipeline-container">
+      <div class="pipeline-header">
+        <h3><span>⚡</span> HAZARD MITIGATION CLOSED-LOOP ENGINE</h3>
+        <span style="font-size: 0.72rem; color: var(--text-dim); font-family: var(--font-mono);">CLICK ANY NODE TO INSPECT PHASE</span>
+      </div>
+      <div class="pipeline-steps">
+        <div class="pipeline-step active" data-tab="simulation">1. HAZARD DETECTED</div>
+        <span class="pipeline-arrow">➔</span>
+        <div class="pipeline-step" data-tab="monitoring">2. CONTRIBUTING FACTORS</div>
+        <span class="pipeline-arrow">➔</span>
+        <div class="pipeline-step" data-tab="drishti">3. VULNERABLE AREA</div>
+        <span class="pipeline-arrow">➔</span>
+        <div class="pipeline-step" data-tab="afforestation">4. AFFORESTATION PLAN</div>
+        <span class="pipeline-arrow">➔</span>
+        <div class="pipeline-step" data-tab="afforestation">5. SPECIES SELECTION</div>
+        <span class="pipeline-arrow">➔</span>
+        <div class="pipeline-step" data-tab="afforestation">6. TREE COUNT</div>
+        <span class="pipeline-arrow">➔</span>
+        <div class="pipeline-step" data-tab="gps-map">7. GPS PLACEMENT</div>
+        <span class="pipeline-arrow">➔</span>
+        <div class="pipeline-step" data-tab="terrain">8. HAZARD MITIGATION</div>
+        <span class="pipeline-arrow">➔</span>
+        <div class="pipeline-step" data-tab="analytics">9. MONITORING</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================================
+       VISUAL STORY STRIP
+       ==================================================================== -->
+  <section class="visual-story-section">
+    <div class="section-heading-clean">
+      <div>
+        <span class="eyebrow">FIELD STORY</span>
+        <h2>From landscape sensing to ecological action</h2>
+        <p>A simple visual overview of how BHOOMI-Net observes, understands and responds.</p>
+      </div>
+      <span class="soft-chip">SIMULATED DIGITAL TWIN</span>
+    </div>
+    <div class="visual-story-grid">
+      <article class="visual-story-card">
+        <img src="assets/landscape.svg" alt="Green hillside landscape monitored by BHOOMI-Net">
+        <div class="visual-story-copy">
+          <span class="story-number">01</span>
+          <div><h3>Observe the land</h3><p>Drishti-Cam, soil, NDVI and LiDAR readings build a live land profile.</p></div>
+        </div>
+      </article>
+      <article class="visual-story-card">
+        <img src="assets/flood.svg" alt="Simulated river basin and erosion zone">
+        <div class="visual-story-copy">
+          <span class="story-number">02</span>
+          <div><h3>Understand the hazard</h3><p>Flood, wildfire and landslide scenarios show how risk can develop.</p></div>
+        </div>
+      </article>
+      <article class="visual-story-card">
+        <img src="assets/planting.svg" alt="Afforestation planting grid on a hillside">
+        <div class="visual-story-copy">
+          <span class="story-number">03</span>
+          <div><h3>Restore with precision</h3><p>AI zones the terrain, recommends species and plots planting points.</p></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  </div>
+
+  <!-- ====================================================================
+       MAIN WORKSPACE PANES
+       ==================================================================== -->
+  <main class="workspace-content">
+
+    <!-- ================================================================
+         TAB 1: LIVE SENSOR MONITORING & AI ENGINE
+         ================================================================ -->
+    <div class="tab-pane active" id="tab-monitoring">
+      <div class="sensors-grid">
+        <!-- Drishti-Cam Telemetry Card -->
+        <div class="sensor-card">
+          <div class="sensor-card-header">
+            <div class="sensor-title-group">
+              <div class="sensor-icon">📹</div>
+              <div>
+                <div class="sensor-name">DRISHTI-CAM</div>
+                <div class="sensor-tag">Edge Computer Vision Node</div>
+              </div>
+            </div>
+            <div class="sensor-online-pill"><span class="pulsing-dot"></span> ONLINE</div>
+          </div>
+          <div class="sensor-data-list">
+            <div class="sensor-data-row">
+              <span class="sensor-data-label">Camera Status:</span>
+              <span class="sensor-data-val highlight-green">STREAMING (30 FPS)</span>
+            </div>
+            <div class="sensor-data-row">
+              <span class="sensor-data-label">Field of View:</span>
+              <span class="sensor-data-val">120° Panoramic</span>
+            </div>
+            <div class="sensor-data-row">
+              <span class="sensor-data-label">Resolution:</span>
+              <span class="sensor-data-val">1600 × 1200 px</span>
+            </div>
+            <div class="sensor-data-row">
+              <span class="sensor-data-label">Canopy Coverage:</span>
+              <span class="sensor-data-val highlight-cyan" id="live-drishti-canopy">24.2%</span>
+            </div>
+            <div class="sensor-data-row">
+              <span class="sensor-data-label">Bare Exposed Soil:</span>
+              <span class="sensor-data-val highlight-amber" id="live-drishti-soil">75.8%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bhoomi-Probe Sensor Card -->
+        <div class="sensor-card">
+          <div class="sensor-card-header">
+            <div class="sensor-title-group">
+              <div class="sensor-icon">🌱</div>
+              <div>
+                <div class="sensor-name">BHOOMI-PROBE</div>
+                <div class="sensor-tag">Subsurface Infiltration Node</div>
+              </div>
+            </div>
+            <div class="sensor-online-pill"><span class="pulsing-dot"></span> ACTIVE</div>
+          </div>
+          <div class="sensor-data-list">
+            <div class="sensor-data-row">
+              <span class="sensor-data-label">Soil Moisture:</span>
+              <span class="sensor-data-val highlight-cyan" id="live-bhoomi-moisture">68%</span>
+            </div>
+            <div class="sensor-data-row">
+              <span class="sensor-data-label">Soil Infiltration:</span>
+              <span class="sensor-data-val highlight-green" id="live-bhoomi-infil">42 mm/hr</span>
+            </div>
+            <div class="sensor-data-row">
+              <span class="sensor-data-label">Soil Compaction:</span>
+              <span class="sensor-data-val">MEDIUM (1.8 MPa)</span>
+            </div>
+            <div class="sensor-data-row">
+              <span class="sensor-data-label">Pore Water Pressure:</span>
+              <span class="sensor-data-val">24.2 kPa</span>
+            </div>
+            <div class="sensor-data-row">
+              <span class="sensor-data-label">Soil Temperature:</span>
+              <span class="sensor-data-val">22.4 °C</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- NDVI Sensor Card -->
+        <div class="sensor-card">
+          <div class="sensor-card-header">
+            <div class="sensor-title-group">
+              <div class="sensor-icon">🌿</div>
+              <div>
+                <div class="sensor-name">NDVI SENSOR</div>
+                <div class="sensor-tag">Multispectral Vegetation Health</div>
+              </div>
+            </div>
+            <div class="sensor-online-pill"><span class="pulsing-dot"></span> ACTIVE</div>
+          </div>
+          <div class="sensor-data-list">
+            <div class="sensor-data-row">
+              <span class="sensor-data-label">NDVI Index:</span>
+              <span class="sensor-data-val highlight-cyan" id="live-ndvi-val">0.51</span>
+            </div>
+            <div class="sensor-data-row">
+              <span class="sensor-data-label">Vegetation Health:</span>
+              <span class="sensor-data-val highlight-green">MODERATE VIGOR</span>
+            </div>
+            <div class="sensor-data-row">
+              <span class="sensor-data-label">Chlorophyll Absorption:</span>
+              <span class="sensor-data-val">680 nm Active</span>
+            </div>
+            <div class="sensor-data-row">
+              <span class="sensor-data-label">Foliar Moisture Stress:</span>
+              <span class="sensor-data-val">LOW-MEDIUM</span>
+            </div>
+            <div class="sensor-data-row">
+              <span class="sensor-data-label">Biomass Density:</span>
+              <span class="sensor-data-val">1.4 kg/m²</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- LiDAR Sensor Card -->
+        <div class="sensor-card">
+          <div class="sensor-card-header">
+            <div class="sensor-title-group">
+              <div class="sensor-icon">📡</div>
+              <div>
+                <div class="sensor-name">LiDAR TELEMETRY</div>
+                <div class="sensor-tag">3D Surface Topography Scanner</div>
+              </div>
+            </div>
+            <div class="sensor-online-pill"><span class="pulsing-dot"></span> ACTIVE</div>
+          </div>
+          <div class="sensor-data-list">
+            <div class="sensor-data-row">
+              <span class="sensor-data-label">Hillside Slope Angle:</span>
+              <span class="sensor-data-val highlight-amber" id="live-lidar-slope">26.4°</span>
+            </div>
+            <div class="sensor-data-row">
+              <span class="sensor-data-label">Catchment Elevation:</span>
+              <span class="sensor-data-val">842 m MSL</span>
+            </div>
+            <div class="sensor-data-row">
+              <span class="sensor-data-label">Erosion Channel:</span>
+              <span class="sensor-data-val highlight-amber">DETECTED (GULLY #2)</span>
+            </div>
+            <div class="sensor-data-row">
+              <span class="sensor-data-label">Colluvial Slip Delta:</span>
+              <span class="sensor-data-val" id="live-lidar-slip">0.0 cm</span>
+            </div>
+            <div class="sensor-data-row">
+              <span class="sensor-data-label">Surface Roughness:</span>
+              <span class="sensor-data-val">Ra 4.2 mm</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- GPS Sensor Card -->
+        <div class="sensor-card">
+          <div class="sensor-card-header">
+            <div class="sensor-title-group">
+              <div class="sensor-icon">📍</div>
+              <div>
+                <div class="sensor-name">GPS TELEMETRY</div>
+                <div class="sensor-tag">Geodetic Location Reference</div>
+              </div>
+            </div>
+            <div class="sensor-online-pill"><span class="pulsing-dot"></span> LOCKED</div>
+          </div>
+          <div class="sensor-data-list">
+            <div class="sensor-data-row">
+              <span class="sensor-data-label">Latitude (Simulated):</span>
+              <span class="sensor-data-val highlight-cyan">9.925200° N</span>
+            </div>
+            <div class="sensor-data-row">
+              <span class="sensor-data-label">Longitude (Simulated):</span>
+              <span class="sensor-data-val highlight-cyan">78.119800° E</span>
+            </div>
+            <div class="sensor-data-row">
+              <span class="sensor-data-label">Altitude:</span>
+              <span class="sensor-data-val">842.4 m</span>
+            </div>
+            <div class="sensor-data-row">
+              <span class="sensor-data-label">Satellites Tracked:</span>
+              <span class="sensor-data-val highlight-green">14 (RTK FIX)</span>
+            </div>
+            <div class="sensor-data-row">
+              <span class="sensor-data-label">Accuracy:</span>
+              <span class="sensor-data-val">± 0.08 m</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- LoRa Mesh Network Card -->
+        <div class="sensor-card">
+          <div class="sensor-card-header">
+            <div class="sensor-title-group">
+              <div class="sensor-icon">📶</div>
+              <div>
+                <div class="sensor-name">LoRa MESH NETWORK</div>
+                <div class="sensor-tag">Edge Wireless Sensor Gateway</div>
+              </div>
+            </div>
+            <div class="sensor-online-pill"><span class="pulsing-dot"></span> SYNCHRONIZED</div>
+          </div>
+          <div class="sensor-data-list">
+            <div class="sensor-data-row">
+              <span class="sensor-data-label">Nodes Connected:</span>
+              <span class="sensor-data-val highlight-green">4 / 4 NODES</span>
+            </div>
+            <div class="sensor-data-row">
+              <span class="sensor-data-label">Signal RSSI:</span>
+              <span class="sensor-data-val">-72 dBm (Excellent)</span>
+            </div>
+            <div class="sensor-data-row">
+              <span class="sensor-data-label">Packet Delivery Rate:</span>
+              <span class="sensor-data-val highlight-cyan">99.8%</span>
+            </div>
+            <div class="sensor-data-row">
+              <span class="sensor-data-label">Frequency Band:</span>
+              <span class="sensor-data-val">868 MHz ISM</span>
+            </div>
+            <div class="sensor-data-row">
+              <span class="sensor-data-label">Mesh Topology:</span>
+              <span class="sensor-data-val">Star-of-Multipath</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Multi-Sensor AI Fusion Engine Pipeline Section -->
+      <div class="ai-pipeline-card">
+        <h3 style="font-size: 1rem; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
+          <span>🧠</span> BHOOMI MULTI-SENSOR AI ENGINE PIPELINE
+        </h3>
+        <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 4px;">
+          Sensor fusion integrates optical computer vision, hydrologic soil probes, spectral NDVI, and LiDAR topography to calculate empirical risk vectors.
+        </p>
+
+        <div class="ai-flow-diagram">
+          <div class="flow-node">
+            <div class="flow-node-icon">📹</div>
+            <div class="flow-node-title">DRISHTI-CAM</div>
+            <div class="flow-node-desc">Canopy & Bare Soil</div>
+          </div>
+          <span class="flow-arrow">+</span>
+
+          <div class="flow-node">
+            <div class="flow-node-icon">🌱</div>
+            <div class="flow-node-title">SOIL PROBE</div>
+            <div class="flow-node-desc">Moisture & Infiltration</div>
+          </div>
+          <span class="flow-arrow">+</span>
+
+          <div class="flow-node">
+            <div class="flow-node-icon">🌿</div>
+            <div class="flow-node-title">NDVI SENSOR</div>
+            <div class="flow-node-desc">Vegetation Health</div>
+          </div>
+          <span class="flow-arrow">+</span>
+
+          <div class="flow-node">
+            <div class="flow-node-icon">📡</div>
+            <div class="flow-node-title">LiDAR</div>
+            <div class="flow-node-desc">Slope & Gully Scan</div>
+          </div>
+          <span class="flow-arrow">+</span>
+
+          <div class="flow-node">
+            <div class="flow-node-icon">⛅</div>
+            <div class="flow-node-title">WEATHER DATA</div>
+            <div class="flow-node-desc">Rainfall, Temp, Wind</div>
+          </div>
+          <span class="flow-arrow">➔</span>
+
+          <div class="ai-core-hub">
+            <div class="ai-core-title">BHOOMI AI ENGINE</div>
+            <div class="ai-core-sub">Autonomous Sensor Fusion Matrix</div>
+          </div>
+          <span class="flow-arrow">➔</span>
+
+          <div class="flow-node" style="border-color: var(--accent-green); background: rgba(0, 240, 152, 0.08);">
+            <div class="flow-node-icon">🛡️</div>
+            <div class="flow-node-title" style="color: var(--accent-green);">HAZARD RISK + AFFORESTATION</div>
+            <div class="flow-node-desc">Autonomous Mitigation</div>
+          </div>
+        </div>
+
+        <!-- Mathematical Risk Formulas Breakdown -->
+        <div class="risk-formula-grid">
+          <div class="formula-card">
+            <h4>🌧️ Flash Flood Risk Model</h4>
+            <div class="formula-code">Risk = 0.30·Rain + 0.25·SoilM + 0.20·BareSoil + 0.15·Slope + 0.10·RunoffV</div>
+            <div class="formula-weights">Weights rainfall accumulation and soil saturation against exposed bare topsoil runoff speed.</div>
+          </div>
+
+          <div class="formula-card">
+            <h4>🔥 Wildfire Propagation Model</h4>
+            <div class="formula-code">Risk = 0.25·Temp + 0.25·(100-Humidity) + 0.20·(1-NDVI) + 0.15·Wind + 0.15·Fuel</div>
+            <div class="formula-weights">Synthesizes ambient thermal elevation, desiccated foliage NDVI, and wind vector corridors.</div>
+          </div>
+
+          <div class="formula-card">
+            <h4>⛰️ Landslide Slip Risk Model</h4>
+            <div class="formula-code">Risk = 0.30·Slope + 0.25·SoilM + 0.20·LiDAR Slip + 0.15·Rain + 0.10·Erosion</div>
+            <div class="formula-weights">Calculates slope shear instability against hydrostatic pore water pressure and lack of anchoring roots.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================================================================
+         TAB 2: DISASTER SIMULATION CENTER
+         ================================================================ -->
+    <div class="tab-pane" id="tab-simulation">
+      <div class="sim-console-grid">
+        <!-- Main Timeline & Controls -->
+        <div class="sim-stage-tracker">
+          <div class="sim-control-bar">
+            <div>
+              <h3 style="font-size: 1rem; color: #fff; margin-bottom: 4px;">⚡ SIMULATE HAZARD</h3>
+              <p style="font-size: 0.74rem; color: var(--text-muted);">
+                Observe how multi-sensor indicators develop step-by-step before early warning triggers.
+              </p>
+            </div>
+            <div class="sim-buttons-group">
+              <button class="btn-hazard flood" id="btn-sim-flood">🌧️ SIMULATE FLASH FLOOD</button>
+              <button class="btn-hazard fire" id="btn-sim-fire">🔥 SIMULATE WILDFIRE</button>
+              <button class="btn-hazard slide" id="btn-sim-slide">⛰️ SIMULATE LANDSLIDE</button>
+              <button class="btn-hazard reset" id="btn-sim-reset">🌱 RESET TO STABLE BASELINE</button>
+            </div>
+          </div>
+
+          <!-- Playback Controls -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <div style="font-size: 0.76rem; color: var(--accent-cyan); font-family: var(--font-mono);">
+              HAZARD PROGRESSION TIMELINE (STAGES 1 TO 8)
+            </div>
+            <div class="playback-controls">
+              <button class="btn-icon" id="btn-sim-prev" title="Previous Stage">⏮</button>
+              <button class="btn-icon" id="btn-sim-playpause" title="Play / Pause Simulation">▶</button>
+              <button class="btn-icon" id="btn-sim-next" title="Next Stage">⏭</button>
+            </div>
+          </div>
+
+          <!-- Stepper Container -->
+          <div class="timeline-stepper" id="sim-timeline-stepper">
+            <!-- Populated dynamically via JS -->
+          </div>
+        </div>
+
+        <!-- Side Diagnostics Panel -->
+        <div class="sim-diagnostics-side">
+          <div class="side-panel-card">
+            <h4><span>📟</span> SIMULATION STATE</h4>
+            <div style="margin-bottom: 12px;">
+              <span style="font-size: 0.7rem; color: var(--text-muted); display: block; margin-bottom: 4px;">CURRENT MODE:</span>
+              <span class="metric-badge badge-low" id="sim-active-hazard-badge">STABLE BASELINE</span>
+            </div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); line-height: 1.5; background: rgba(0,0,0,0.3); padding: 10px; border-radius: var(--radius-sm);">
+              ⚠️ <b>Simulation Notice:</b><br/>
+              All hazard indices are computed via digital twin mathematical models. BHOOMI AI does not predict the exact time of real-world disasters; it estimates conditional hazard vulnerability based on sensor thresholds.
+            </div>
+          </div>
+
+          <div class="side-panel-card">
+            <h4><span>🛡️</span> RECOMMENDED ACTION</h4>
+            <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 12px;">
+              When risk indices cross critical thresholds, BHOOMI-Net automatically routes directly to the AI Afforestation Engine.
+            </p>
+            <button class="btn-hazard" id="btn-jump-afforest" style="width: 100%; justify-content: center; background: var(--accent-green-dim); border-color: var(--accent-green); color: var(--accent-green);" onclick="window.bhoomiApp.switchTab('afforestation')">
+              🌱 Open Afforestation Solution
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================================================================
+         TAB 3: EMERGENCY RESPONSE CENTER
+         ================================================================ -->
+    <div class="tab-pane" id="tab-emergency">
+      <section class="emergency-page">
+        <div class="emergency-hero">
+          <div>
+            <div class="eyebrow emergency-eyebrow">🚨 EMERGENCY RESPONSE CENTER</div>
+            <h2>Fire detected → locate → alert → dispatch → route</h2>
+            <p>Use this dedicated response workspace to see the exact simulated fire location, affected-area occupancy, public warning, officer notification and responder route.</p>
+          </div>
+          <div class="simulated-chip">● SIMULATED EMERGENCY</div>
+        </div>
+
+        <div class="emergency-status-banner" id="emergency-status-banner">
+          <div><strong id="emergency-main-status">WAITING FOR FIRE EVENT</strong><span id="emergency-main-detail">Run the wildfire simulation to activate the response workflow.</span></div>
+          <button class="response-btn route" id="btn-emergency-open-fire">🔥 Start Fire Event</button>
+        </div>
+
+        <div class="emergency-grid">
+          <div class="emergency-location-card">
+            <div class="section-label">📍 EXACT INCIDENT LOCATION</div>
+            <div class="location-title" id="fire-location-name">East Ridge Sector • Node-03</div>
+            <div class="location-gps" id="fire-location-gps">9.92840° N, 78.12410° E</div>
+            <div class="location-map">
+              <div class="map-grid"></div>
+              <div class="route-road road-a"></div><div class="route-road road-b"></div>
+              <div class="incident-pin">🔥<span>FIRE</span></div>
+              <div class="node-pin">📡<span>NODE-03</span></div>
+              <div class="safe-pin">🛡️<span>SAFE POINT</span></div>
+            </div>
+            <div class="location-meta"><span>Detection source</span><strong>Drishti-Cam + sensor fusion</strong></div>
+          </div>
+
+          <div class="emergency-people-card">
+            <div class="section-label">👥 PEOPLE SAFETY</div>
+            <div class="people-number" id="fire-people-count">27</div>
+            <div class="people-caption">estimated people inside the simulated 500 m risk zone</div>
+            <div class="safety-item"><span>Risk zone</span><strong>500 m radius</strong></div>
+            <div class="safety-item"><span>Safe assembly point</span><strong id="fire-safe-point">North Gate Community Ground</strong></div>
+            <div class="privacy-note">Demo uses simulated occupancy only. It does not identify or track individual people.</div>
+          </div>
+        </div>
+
+        <div class="response-workflow">
+          <div class="section-label">⚡ RESPONSE WORKFLOW</div>
+          <div class="response-step-grid">
+            <div class="response-step"><span>01</span><b>Detect</b><small>Fire event identified</small></div>
+            <div class="response-step"><span>02</span><b>Locate</b><small>Exact place + GPS</small></div>
+            <div class="response-step"><span>03</span><b>Protect</b><small>Warn people nearby</small></div>
+            <div class="response-step"><span>04</span><b>Dispatch</b><small>Update officer</small></div>
+            <div class="response-step"><span>05</span><b>Route</b><small>Show safe approach</small></div>
+          </div>
+          <div class="response-actions emergency-actions">
+            <button class="response-btn alert" id="btn-alert-people">📢 Alert People</button>
+            <button class="response-btn officer" id="btn-notify-officer">👮 Update Officer</button>
+            <button class="response-btn route" id="btn-show-route">🧭 Show Safe Route</button>
+          </div>
+        </div>
+
+        <div class="emergency-bottom-grid">
+          <div class="officer-dispatch emergency-output" id="officer-dispatch" hidden>
+            <div class="dispatch-title">👮 OFFICER DISPATCH MESSAGE</div>
+            <div id="officer-message">Fire detected at East Ridge Sector.</div>
+          </div>
+          <div class="safe-route-box emergency-output" id="safe-route-box" hidden>
+            <div class="route-title">🧭 RECOMMENDED RESPONDER ROUTE</div>
+            <div class="route-line"><span>Officer Station</span><b>→</b><span>North Gate</span><b>→</b><span>Service Road</span><b>→</b><span>East Ridge Sector</span></div>
+            <div class="route-note">Avoid the eastern forest track. Simulated route distance: 2.8 km • ETA: 7 min.</div>
+          </div>
+        </div>
+
+        <div class="emergency-note">
+          <strong>How BHOOMI-Net responds:</strong> sensor fusion identifies the simulated incident zone → GPS pins the location → occupancy data estimates people at risk → public alert is triggered → the officer receives the incident details → the system displays a responder route.
+        </div>
+      </section>
+    </div>
+
+    <!-- ================================================================
+         TAB 3: DRISHTI-CAM AI COMPUTER VISION VIEW
+         ================================================================ -->
+    <div class="tab-pane" id="tab-drishti">
+      <div class="drishti-workspace">
+        <!-- Main Camera Feed -->
+        <div>
+          <div class="camera-feed-container">
+            <canvas id="drishti-cam-canvas" class="camera-feed-canvas"></canvas>
+
+            <!-- Top HUD Overlay -->
+            <div class="cam-hud-top">
+              <div class="cam-rec-indicator">
+                <div class="cam-rec-dot"></div>
+                <span>DRISHTI-CAM • LIVE FEED</span>
+              </div>
+              <div>FOV: 120° • RES: 1600×1200 • 30 FPS</div>
+            </div>
+
+            <!-- Bottom HUD Overlay -->
+            <div class="cam-hud-bottom">
+              <div>CANOPY: 24.2% | BARE SOIL: 75.8% | EROSION DETECTED: YES | SLOPE: 26.4°</div>
+              <div style="color: var(--accent-cyan);">AR TARGETING: ACTIVE</div>
+            </div>
+          </div>
+
+          <!-- Camera Disclaimer Banner -->
+          <div class="cam-disclaimer-banner">
+            <span style="font-size: 1.2rem;">ℹ️</span>
+            <div>
+              <b>System Note:</b> Drishti-Cam provides visual land-condition information. Hazard risk is estimated by combining camera, soil, NDVI, LiDAR and environmental data. The camera feed is not itself predicting disasters.
+            </div>
+          </div>
+        </div>
+
+        <!-- Camera Control & Layer Toggles -->
+        <div class="drishti-side-controls">
+          <div class="side-panel-card">
+            <h4><span>⚙️</span> COMPUTER VISION LAYERS</h4>
+            <div class="ai-layer-toggle-list">
+              <label class="ai-layer-toggle">
+                <span style="display: flex; align-items: center; gap: 8px;">
+                  <span style="color: var(--accent-green);">■</span> Canopy Segmentation
+                </span>
+                <input type="checkbox" id="toggle-cam-canopy" checked>
+              </label>
+
+              <label class="ai-layer-toggle">
+                <span style="display: flex; align-items: center; gap: 8px;">
+                  <span style="color: var(--accent-amber);">■</span> Bare Soil Exposure
+                </span>
+                <input type="checkbox" id="toggle-cam-soil" checked>
+              </label>
+
+              <label class="ai-layer-toggle">
+                <span style="display: flex; align-items: center; gap: 8px;">
+                  <span style="color: #ff9100;">■</span> Active Erosion Gully
+                </span>
+                <input type="checkbox" id="toggle-cam-erosion" checked>
+              </label>
+
+              <label class="ai-layer-toggle">
+                <span style="display: flex; align-items: center; gap: 8px;">
+                  <span style="color: var(--accent-red);">■</span> Critical Slope Threat
+                </span>
+                <input type="checkbox" id="toggle-cam-hazard" checked>
+              </label>
+
+              <label class="ai-layer-toggle">
+                <span style="display: flex; align-items: center; gap: 8px;">
+                  <span style="color: var(--accent-green);">+</span> AR Planting Nodes
+                </span>
+                <input type="checkbox" id="toggle-cam-crosshair" checked>
+              </label>
+
+              <label class="ai-layer-toggle">
+                <span style="display: flex; align-items: center; gap: 8px;">
+                  <span style="color: var(--accent-cyan);">≡</span> Scanlines & Raster HUD
+                </span>
+                <input type="checkbox" id="toggle-cam-scanlines" checked>
+              </label>
+            </div>
+          </div>
+
+          <div class="side-panel-card">
+            <h4><span>🔍</span> CAMERA TELEMETRY</h4>
+            <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.78rem;">
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-muted);">Optics Sensor:</span>
+                <span style="font-family: var(--font-mono);">Sony IMX586 Edge</span>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-muted);">Inference Model:</span>
+                <span style="font-family: var(--font-mono); color: var(--accent-cyan);">YOLOv8-EcoEdge</span>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-muted);">Inference Latency:</span>
+                <span style="font-family: var(--font-mono); color: var(--accent-green);">18.4 ms (On-device)</span>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-muted);">Spectral Band:</span>
+                <span style="font-family: var(--font-mono);">RGB + Near-Infrared</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================================================================
+         TAB 4: AI AFFORESTATION ENGINE & SPECIES SELECTION
+         ================================================================ -->
+    <div class="tab-pane" id="tab-afforestation">
+      <div class="afforest-workspace">
+        <!-- Restoration Summary KPI Boxes -->
+        <div class="afforest-summary-grid">
+          <div class="afforest-stat-box">
+            <div class="afforest-stat-title">Affected Area</div>
+            <div class="afforest-stat-num">10 <span style="font-size: 0.9rem; color: var(--text-muted);">Hectares</span></div>
+          </div>
+          <div class="afforest-stat-box">
+            <div class="afforest-stat-title">Current Canopy</div>
+            <div class="afforest-stat-num" style="color: var(--accent-amber);">24.2%</div>
+          </div>
+          <div class="afforest-stat-box">
+            <div class="afforest-stat-title">Bare Soil</div>
+            <div class="afforest-stat-num" style="color: var(--accent-red);">75.8%</div>
+          </div>
+          <div class="afforest-stat-box">
+            <div class="afforest-stat-title">Average Slope</div>
+            <div class="afforest-stat-num">26.4°</div>
+          </div>
+          <div class="afforest-stat-box">
+            <div class="afforest-stat-title">Calculated Saplings</div>
+            <div class="afforest-stat-num" style="color: var(--accent-cyan);">~4,850</div>
+          </div>
+          <div class="afforest-stat-box">
+            <div class="afforest-stat-title">Restoration Target</div>
+            <div class="afforest-stat-num">68.5% <span style="font-size: 0.9rem; color: var(--text-muted);">Canopy</span></div>
+          </div>
+        </div>
+
+        <div style="background: rgba(0, 240, 152, 0.08); border: 1px solid rgba(0, 240, 152, 0.3); border-radius: var(--radius-sm); padding: 10px 16px; font-size: 0.78rem; color: #a7f3d0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+          <span>📌 <b>Model Estimate Notice:</b> Tree-number calculations are model estimates, not universal ecological facts. Final species selection must be validated with local forestry/ecological experts.</span>
+          <button class="btn-hazard" id="btn-generate-plan" style="background: var(--accent-green); color: #060c18; font-weight: 800; padding: 6px 14px; border: none;">
+            📄 GENERATE AI ECOLOGICAL ACTION PLAN
+          </button>
+        </div>
+
+        <!-- 3 Ecological Zones Grid -->
+        <div class="zones-grid">
+          <!-- Zone 1: Waterfront -->
+          <div class="zone-card zone-waterfront">
+            <img class="zone-photo" src="assets/flood.svg" alt="Waterfront restoration zone"><div class="zone-header">
+              <h3 style="font-size: 0.95rem; color: #fff;">ZONE 1 — WATERFRONT</h3>
+              <span class="zone-badge">2.2 HECTARES (22%)</span>
+            </div>
+            <div class="zone-conditions-list">
+              <div>• Proximity: Southern riverbank corridor</div>
+              <div>• Soil Moisture: High saturation (75-90%)</div>
+              <div>• Vulnerability: Riverbank scouring & flash inundation</div>
+            </div>
+            <div class="species-recommend-box">
+              <div class="species-name-primary">
+                <span>🌿</span> Arjuna <i>(Terminalia arjuna)</i>
+              </div>
+              <p style="font-size: 0.74rem; color: var(--text-muted); margin-top: 4px;">
+                Extensive lateral root network mechanically armors alluvial banks against high water velocity.
+              </p>
+              <div class="species-traits">
+                <span class="species-pill">Spacing: 3.5 m</span>
+                <span class="species-pill">Riparian Native</span>
+                <span class="species-pill">Flood Tolerant</span>
+              </div>
+            </div>
+            <div class="species-recommend-box">
+              <div class="species-name-primary">
+                <span>🎋</span> Bamboo <i>(Bambusa bambos)</i>
+              </div>
+              <p style="font-size: 0.74rem; color: var(--text-muted); margin-top: 4px;">
+                Dense fibrous rhizome system binds topsoil along erosion gully discharge points.
+              </p>
+              <div class="species-traits">
+                <span class="species-pill">Spacing: 3.0 m</span>
+                <span class="species-pill">Sediment Filter</span>
+              </div>
+            </div>
+            <div style="font-size: 0.72rem; color: var(--text-dim); margin-top: 8px;">
+              <b>Target Saplings:</b> ~1,450 trees • <b>Purpose:</b> Riverbank tensile stabilization & flood attenuation
+            </div>
+          </div>
+
+          <!-- Zone 2: Hillside -->
+          <div class="zone-card zone-hillside">
+            <img class="zone-photo" src="assets/landscape.svg" alt="Hillside restoration zone"><div class="zone-header">
+              <h3 style="font-size: 0.95rem; color: #fff;">ZONE 2 — HILLSIDE</h3>
+              <span class="zone-badge">5.2 HECTARES (52%)</span>
+            </div>
+            <div class="zone-conditions-list">
+              <div>• Topography: Steep slope (26.4° grade)</div>
+              <div>• Instability: Loose bare topsoil (75.8%), high runoff</div>
+              <div>• Hazard: Landslide slip surface & gullying</div>
+            </div>
+            <div class="species-recommend-box">
+              <div class="species-name-primary">
+                <span>🌳</span> Deep-Root Neem <i>(Azadirachta indica)</i> & Jamun
+              </div>
+              <p style="font-size: 0.74rem; color: var(--text-muted); margin-top: 4px;">
+                Taproot penetrates 4–8m into fractured bedrock, anchoring slope shear planes.
+              </p>
+              <div class="species-traits">
+                <span class="species-pill">Spacing: 4.5 m</span>
+                <span class="species-pill">Mechanical Anchor</span>
+                <span class="species-pill">Drought Hardy</span>
+              </div>
+            </div>
+            <div class="species-recommend-box">
+              <div class="species-name-primary">
+                <span>🌾</span> Vetiver Grass <i>(Chrysopogon zizanioides)</i>
+              </div>
+              <p style="font-size: 0.74rem; color: var(--text-muted); margin-top: 4px;">
+                Dense vegetative contour hedges intercept overland runoff and trap sediment.
+              </p>
+              <div class="species-traits">
+                <span class="species-pill">Contour Bunds</span>
+                <span class="species-pill">Bioengineering</span>
+              </div>
+            </div>
+            <div style="font-size: 0.72rem; color: var(--text-dim); margin-top: 8px;">
+              <b>Target Saplings:</b> ~2,400 trees • <b>Purpose:</b> Slope mechanical stabilization & runoff reduction
+            </div>
+          </div>
+
+          <!-- Zone 3: Ridge / Forest Fringe -->
+          <div class="zone-card zone-ridge">
+            <img class="zone-photo" src="assets/planting.svg" alt="Ridge afforestation zone"><div class="zone-header">
+              <h3 style="font-size: 0.95rem; color: #fff;">ZONE 3 — RIDGE / FRINGE</h3>
+              <span class="zone-badge">2.6 HECTARES (26%)</span>
+            </div>
+            <div class="zone-conditions-list">
+              <div>• Microclimate: Exposed wind, dry seasonal duff</div>
+              <div>• Biomass: Flammable dry brushwood corridor</div>
+              <div>• Hazard: Wildfire leap onto contiguous forest</div>
+            </div>
+            <div class="species-recommend-box">
+              <div class="species-name-primary">
+                <span>🍂</span> Mahua <i>(Madhuca longifolia)</i> & Sal
+              </div>
+              <p style="font-size: 0.74rem; color: var(--text-muted); margin-top: 4px;">
+                Broadleaf thick foliage retains canopy humidity and resists radiant heat transfer.
+              </p>
+              <div class="species-traits">
+                <span class="species-pill">Spacing: 5.5 m</span>
+                <span class="species-pill">Firebreak Buffer</span>
+                <span class="species-pill">Windbreak</span>
+              </div>
+            </div>
+            <div class="species-recommend-box">
+              <div class="species-name-primary">
+                <span>🌳</span> Native Broadleaf <i>(Ficus benghalensis)</i>
+              </div>
+              <p style="font-size: 0.74rem; color: var(--text-muted); margin-top: 4px;">
+                High foliar water content suppresses spot fires along the northern reserve boundary.
+              </p>
+              <div class="species-traits">
+                <span class="species-pill">Thermal Shield</span>
+                <span class="species-pill">Microclimate Vigor</span>
+              </div>
+            </div>
+            <div style="font-size: 0.72rem; color: var(--text-dim); margin-top: 8px;">
+              <b>Target Saplings:</b> ~1,000 trees • <b>Purpose:</b> Green firebreak continuity & moisture retention
+            </div>
+          </div>
+        </div>
+
+        <!-- Tree Placement Exclusion Rules Panel -->
+        <div class="placement-rules-panel">
+          <h4 style="font-size: 0.85rem; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
+            <span>📐</span> TREE PLACEMENT RULES ENGINE
+          </h4>
+          <p style="font-size: 0.76rem; color: var(--text-muted);">
+            The AI optimizer applies geospatial exclusion constraints to prevent planting in counterproductive locations:
+          </p>
+
+          <div class="rules-indicator-row">
+            <div class="rule-legend-item">
+              <span class="crosshair-icon green">✚</span>
+              <span><b>Green Crosshair:</b> Optimal Planting Node (Adequate soil depth, slope < 35°, clear radius)</span>
+            </div>
+            <div class="rule-legend-item">
+              <span class="crosshair-icon yellow">⨁</span>
+              <span><b>Yellow Crosshair:</b> Moderate Suitability (Requires contour trenching, stony subsoil conditioning)</span>
+            </div>
+            <div class="rule-legend-item">
+              <span class="crosshair-icon red">✕</span>
+              <span><b>Red Marker:</b> Unsuitable / Exclusion Zone (Water channel center, road corridor, sheer cliff > 45°, existing mature canopy)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================================================================
+         TAB 5: 3D DIGITAL TWIN TERRAIN
+         ================================================================ -->
+    <div class="tab-pane" id="tab-terrain">
+      <div class="digital-twin-wrapper">
+        <!-- 3D Canvas Viewport -->
+        <div class="canvas-3d-container">
+          <canvas id="terrain3d-canvas"></canvas>
+
+          <!-- Top-Left HUD Info -->
+          <div class="canvas-overlay-hud">
+            <div>3D DIGITAL TWIN • SECTOR 7-B</div>
+            <div style="color: var(--text-muted); font-size: 0.65rem;">ROTATION: LEFT CLICK | PAN: RIGHT CLICK | ZOOM: SCROLL</div>
+          </div>
+
+          <!-- Camera Preset Buttons -->
+          <div class="canvas-camera-presets">
+            <button class="btn-cam-preset active" data-preset="drone">Drone Patrol</button>
+            <button class="btn-cam-preset" data-preset="birdseye">Top-Down</button>
+            <button class="btn-cam-preset" data-preset="riverbed">River Basin</button>
+            <button class="btn-cam-preset" data-preset="slope">Critical Slope 26.4°</button>
+          </div>
+        </div>
+
+        <!-- 3D Controls Sidebar -->
+        <div class="twin-sidebar-controls">
+          <!-- Before vs After Afforestation Morphing Slider -->
+          <div class="slider-compare-card">
+            <h4><span>🌱</span> BEFORE VS AFTER AFFORESTATION</h4>
+            <div class="compare-labels-row">
+              <span class="label-before">BEFORE (24.2%)</span>
+              <span class="label-after">AFTER (68.5%)</span>
+            </div>
+            <input type="range" min="0" max="100" value="0" class="compare-range-input" id="afforest-morph-slider">
+            <div style="font-size: 0.7rem; color: var(--text-muted); text-align: center;">
+              Drag slider to dynamically grow trees & simulate risk reduction in real time.
+            </div>
+
+            <div class="compare-metrics-diff">
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-muted);">Canopy Coverage:</span>
+                <span style="color: var(--accent-green); font-family: var(--font-mono);" id="diff-canopy">24.2% (+0%)</span>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-muted);">Bare Soil Exposure:</span>
+                <span style="color: var(--accent-amber); font-family: var(--font-mono);" id="diff-soil">75.8% (-0%)</span>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-muted);">Peak Runoff Index:</span>
+                <span style="color: var(--accent-cyan); font-family: var(--font-mono);" id="diff-runoff">84 / 100</span>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-muted);">Slope Factor of Safety:</span>
+                <span style="color: var(--accent-green); font-family: var(--font-mono);" id="diff-fos">1.15 (Critical)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3D Layer Toggles -->
+          <div class="side-panel-card">
+            <h4><span>🗺️</span> 3D TERRAIN LAYERS</h4>
+            <div class="ai-layer-toggle-list">
+              <label class="ai-layer-toggle">
+                <span>🌳 Vegetation Canopy</span>
+                <input type="checkbox" id="toggle-3d-veg" checked>
+              </label>
+              <label class="ai-layer-toggle">
+                <span>💧 Water & Hydrology</span>
+                <input type="checkbox" id="toggle-3d-water" checked>
+              </label>
+              <label class="ai-layer-toggle">
+                <span>⛰️ Slope Steepness Heatmap</span>
+                <input type="checkbox" id="toggle-3d-slope">
+              </label>
+              <label class="ai-layer-toggle">
+                <span>🔥 Wildfire Vulnerability Layer</span>
+                <input type="checkbox" id="toggle-3d-fire">
+              </label>
+              <label class="ai-layer-toggle">
+                <span>🌧️ Flood Inundation Layer</span>
+                <input type="checkbox" id="toggle-3d-flood">
+              </label>
+              <label class="ai-layer-toggle">
+                <span>🌱 GPS AI Planting Pins</span>
+                <input type="checkbox" id="toggle-3d-pins" checked>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================================================================
+         TAB 6: GPS PLANTING MAP & INSPECTOR
+         ================================================================ -->
+    <div class="tab-pane" id="tab-gps-map">
+      <div class="gps-map-workspace">
+        <!-- Leaflet Map Viewport -->
+        <div class="map-viewport-container">
+          <div id="leaflet-gps-map"></div>
+
+          <!-- Floating Filter Bar -->
+          <div class="map-filter-floating-bar">
+            <button class="map-filter-btn active" data-filter="all">All Points (65)</button>
+            <button class="map-filter-btn" data-filter="suitable">🟢 Suitable</button>
+            <button class="map-filter-btn" data-filter="moderate">🟡 Moderate</button>
+            <button class="map-filter-btn" data-filter="unsuitable">🔴 Excluded</button>
+            <button class="map-filter-btn" data-filter="waterfront">Zone 1 (Waterfront)</button>
+            <button class="map-filter-btn" data-filter="hillside">Zone 2 (Hillside)</button>
+            <button class="map-filter-btn" data-filter="ridge">Zone 3 (Ridge)</button>
+          </div>
+        </div>
+
+        <!-- Plant Inspector Dossier Panel -->
+        <div class="plant-inspector-card">
+          <div class="inspector-header">
+            <div>
+              <span style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase;">PLANT INSPECTION DOSSIER</span>
+              <div class="plant-id-badge" id="inspector-plant-id">PLANT-#001</div>
+            </div>
+            <span class="metric-badge badge-low" id="inspector-suit-badge">SUITABLE</span>
+          </div>
+
+          <div class="inspector-field">
+            <span class="inspector-label">GPS Latitude:</span>
+            <span class="inspector-value" id="inspector-lat">9.923000° N</span>
+          </div>
+
+          <div class="inspector-field">
+            <span class="inspector-label">GPS Longitude:</span>
+            <span class="inspector-value" id="inspector-lng">78.118300° E</span>
+          </div>
+
+          <div class="inspector-field">
+            <span class="inspector-label">Ecological Zone:</span>
+            <span class="inspector-value" id="inspector-zone">Zone 1 — Waterfront (Riparian Buffer)</span>
+          </div>
+
+          <div class="inspector-field">
+            <span class="inspector-label">Recommended Species:</span>
+            <span class="inspector-value" style="color: var(--accent-green);" id="inspector-species">Arjuna (Terminalia arjuna)</span>
+          </div>
+
+          <div class="inspector-field">
+            <span class="inspector-label">Planting Spacing:</span>
+            <span class="inspector-value" id="inspector-spacing">3.5 m</span>
+          </div>
+
+          <div class="inspector-field">
+            <span class="inspector-label">Restoration Priority:</span>
+            <span class="inspector-value" style="color: var(--accent-amber);" id="inspector-priority">HIGH</span>
+          </div>
+
+          <div class="inspector-field">
+            <span class="inspector-label">Ecological Justification:</span>
+            <span class="inspector-value" style="font-family: var(--font-sans); font-size: 0.78rem; color: var(--text-muted);" id="inspector-reason">
+              Direct riverbank scour mitigation; high soil moisture and active erosion corridor.
+            </span>
+          </div>
+
+          <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.08); font-size: 0.7rem; color: var(--text-dim);">
+            Click any crosshair marker on the map to inspect its geo-coordinates, recommended species, and ecological placement justification.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================================================================
+         TAB 7: ANALYTICS & CHARTS
+         ================================================================ -->
+    <div class="tab-pane" id="tab-analytics">
+      <div class="analytics-grid">
+        <!-- Chart 1: Rainfall vs Runoff Hydrograph -->
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <h4><span>🌧️</span> Rainfall vs Runoff Hydrograph</h4>
+            <span style="font-size: 0.7rem; color: var(--accent-cyan); font-family: var(--font-mono);">PRE VS POST AFFORESTATION</span>
+          </div>
+          <div class="chart-canvas-wrapper">
+            <canvas id="chart-rainfall-runoff"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 2: Soil Moisture vs Landslide Risk -->
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <h4><span>⛰️</span> Soil Moisture vs Landslide Slope Factor</h4>
+            <span style="font-size: 0.7rem; color: var(--accent-amber); font-family: var(--font-mono);">PORE PRESSURE CORRELATION</span>
+          </div>
+          <div class="chart-canvas-wrapper">
+            <canvas id="chart-soil-slide"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 3: Canopy Coverage vs Runoff Risk -->
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <h4><span>🌳</span> Canopy Coverage vs Runoff Risk</h4>
+            <span style="font-size: 0.7rem; color: var(--accent-green); font-family: var(--font-mono);">INTERCEPTION BENEFIT</span>
+          </div>
+          <div class="chart-canvas-wrapper">
+            <canvas id="chart-canopy-runoff"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 4: NDVI vs Vegetation Health -->
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <h4><span>🌿</span> NDVI Biomass Health Distribution</h4>
+            <span style="font-size: 0.7rem; color: var(--accent-blue); font-family: var(--font-mono);">HECTARE ALLOCATION</span>
+          </div>
+          <div class="chart-canvas-wrapper">
+            <canvas id="chart-ndvi-health"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 5: Hazard Risk Over Time -->
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <h4><span>⏱️</span> Hazard Risk Timeline (24-Hour Window)</h4>
+            <span style="font-size: 0.7rem; color: var(--accent-red); font-family: var(--font-mono);">MULTI-HAZARD CURVES</span>
+          </div>
+          <div class="chart-canvas-wrapper">
+            <canvas id="chart-temporal-risk"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 6: Tree Planting Growth Projection -->
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <h4><span>📈</span> 5-Year Canopy Growth & Survival Projection</h4>
+            <span style="font-size: 0.7rem; color: var(--accent-green); font-family: var(--font-mono);">ECOLOGICAL RECOVERY</span>
+          </div>
+          <div class="chart-canvas-wrapper">
+            <canvas id="chart-planting-growth"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ====================================================================
+       EARLY WARNING MODAL
+       ==================================================================== -->
+  <div class="early-warning-modal-backdrop" id="early-warning-modal">
+    <div class="early-warning-dialog">
+      <div class="warning-dialog-header">
+        <h3><span>⚠️</span> <span id="warning-hazard-title">FLASH FLOOD RISK DETECTED</span></h3>
+        <span class="metric-badge badge-high" id="warning-risk-level">CRITICAL</span>
+      </div>
+      <div class="warning-dialog-body">
+        <div class="warning-hazard-banner">
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">PRIMARY ESTIMATED HAZARD:</div>
+            <div style="font-size: 1.1rem; font-weight: 800; color: #fff;">FLASH FLOOD INUNDATION</div>
+          </div>
+          <div class="warning-lead-time-box" id="warning-lead-time">
+            SIMULATED: 4–5 DAYS (LEAD TIME)
+          </div>
+        </div>
+
+        <div class="warning-contributors-list">
+          <b>KEY CONTRIBUTING SENSOR FACTORS:</b>
+          <ul>
+            <li>Heavy cumulative precipitation (165 mm over catchment)</li>
+            <li>Soil moisture saturation reaching 98% (Infiltration capacity exceeded)</li>
+            <li>Low canopy coverage (24.2%) producing rapid surface sheet runoff</li>
+            <li>LiDAR identified active erosion gullies accelerating water surge at 3.9 m/s</li>
+            <li>Steep 26.4° hillside gradient directing discharge into populated valley</li>
+          </ul>
+        </div>
+
+        <div style="font-size: 0.78rem; color: #ffecb3;">
+          <b>Recommended Immediate Actions:</b> Inspect drainage channels, issue slope stabilization notices, and deploy AI Afforestation restoration protocol.
+        </div>
+
+        <!-- Simulation Audio Actions -->
+        <div class="warning-audio-actions">
+          <button class="btn-audio" id="btn-warning-siren">🔊 TEST SIREN (SYNTH)</button>
+          <button class="btn-audio" id="btn-warning-voice">🗣️ VOICE ALERT</button>
+        </div>
+      </div>
+      <div class="warning-dialog-footer">
+        <button class="btn-hazard" id="btn-warning-dismiss" style="background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.2);">
+          Dismiss Notice
+        </button>
+        <button class="btn-hazard" id="btn-warning-afforest" style="background: var(--accent-green); color: #060c18; font-weight: 800; border: none;">
+          🌱 Deploy AI Afforestation Plan
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       AI ECOLOGICAL ACTION PLAN MODAL (REPORT DOSSIER)
+       ==================================================================== -->
+  <div class="report-modal-backdrop" id="action-plan-modal">
+    <div class="report-dialog">
+      <div class="warning-dialog-header" style="background: rgba(0, 240, 152, 0.15); border-color: rgba(0, 240, 152, 0.3);">
+        <h3 style="color: var(--accent-green);"><span>📄</span> AI ECOLOGICAL RESTORATION ACTION PLAN</h3>
+        <button id="btn-report-close" style="background: transparent; border: none; color: #fff; font-size: 1.2rem; cursor: pointer;">✕</button>
+      </div>
+      <div class="report-body-scroll">
+        <div class="report-meta-grid">
+          <div class="report-meta-item">
+            <span style="color: var(--text-muted); font-size: 0.68rem;">DOSSIER ID:</span>
+            <div style="font-family: var(--font-mono); font-weight: 700;" id="rep-id">BHOOMI-REP-849201</div>
+          </div>
+          <div class="report-meta-item">
+            <span style="color: var(--text-muted); font-size: 0.68rem;">TIMESTAMP:</span>
+            <div id="rep-date" style="font-size: 0.72rem;">2026-09-07 17:55 UTC</div>
+          </div>
+          <div class="report-meta-item">
+            <span style="color: var(--text-muted); font-size: 0.68rem;">CATCHMENT AREA:</span>
+            <div id="rep-area" style="font-weight: 700;">10.0 Hectares</div>
+          </div>
+          <div class="report-meta-item">
+            <span style="color: var(--text-muted); font-size: 0.68rem;">CANOPY RESTORATION:</span>
+            <div id="rep-canopy-diff" style="color: var(--accent-green); font-weight: 700;">24.2% ➔ 68.5%</div>
+          </div>
+        </div>
+
+        <div style="background: rgba(0,0,0,0.35); padding: 14px; border-radius: var(--radius-sm); font-size: 0.8rem; line-height: 1.5;">
+          <h4 style="color: var(--accent-cyan); margin-bottom: 6px;">Executive Geotechnical Summary:</h4>
+          Sector 7-B catchment exhibits acute multi-hazard vulnerability under heavy precipitation and summer dry spells. Lack of vegetation (75.8% bare soil) generates catastrophic runoff velocity and elevated landslide shear failure. The AI engine prescribes ~4,850 saplings distributed across 3 ecological zones to restore hydrological interception, bind deep slope strata, and create living firebreaks.
+        </div>
+
+        <div>
+          <h4 style="font-size: 0.82rem; color: #fff; margin-bottom: 6px;">Recommended Species by Zone:</h4>
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th>Zone</th>
+                <th>Area</th>
+                <th>Recommended Species</th>
+                <th>Spacing</th>
+                <th>Estimated Count</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Zone 1: Waterfront</td>
+                <td>2.2 ha (22%)</td>
+                <td>Arjuna <i>(Terminalia arjuna)</i> & Bamboo</td>
+                <td>3.5 m</td>
+                <td>~1,450 trees</td>
+              </tr>
+              <tr>
+                <td>Zone 2: Hillside</td>
+                <td>5.2 ha (52%)</td>
+                <td>Deep-Root Neem, Jamun & Vetiver Hedges</td>
+                <td>4.5 m</td>
+                <td>~2,400 trees</td>
+              </tr>
+              <tr>
+                <td>Zone 3: Ridge / Fringe</td>
+                <td>2.6 ha (26%)</td>
+                <td>Mahua <i>(Madhuca longifolia)</i> & Sal</td>
+                <td>5.5 m</td>
+                <td>~1,000 trees</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div>
+          <h4 style="font-size: 0.82rem; color: #fff; margin-bottom: 6px;">GPS Planting Coordinates Sample (65 Points Total):</h4>
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th>Plant ID</th>
+                <th>Coordinates</th>
+                <th>Zone</th>
+                <th>Species</th>
+                <th>Spacing</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="rep-table-body">
+              <!-- Dynamically populated via JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <div style="font-size: 0.72rem; color: var(--text-dim); line-height: 1.4;">
+          * Note: Species suitability and tree numbers are model estimates generated by the BHOOMI AI Restoration Module. Implementation requires on-site validation with regional forestry authorities.
+        </div>
+      </div>
+
+      <div class="warning-dialog-footer" style="background: rgba(0,0,0,0.5);">
+        <button class="btn-hazard" id="btn-download-csv" style="background: var(--accent-cyan-dim); border-color: var(--accent-cyan); color: var(--accent-cyan);">
+          📥 Download GPS CSV Manifest
+        </button>
+        <button class="btn-hazard" id="btn-print-report" style="background: var(--accent-green); color: #050a12; font-weight: 800; border: none;">
+          🖨️ Print / Save PDF Dossier
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       JUDGE DEMO MODE PRESENTATION FLOATING BANNER
+       ==================================================================== -->
+  <div class="judge-demo-banner" id="judge-demo-banner">
+    <div class="demo-step-counter" id="demo-step-counter">STEP [01 / 15]</div>
+    <div class="demo-narration-text" id="demo-narration-text">
+      Initializing BHOOMI-Net 2.0 digital twin. Stable baseline ecosystem monitored across 10 hectares.
+    </div>
+    <button class="btn-demo-stop" id="btn-demo-stop">STOP DEMO</button>
+  </div>
+
+  <!-- ====================================================================
+       EXTERNAL & INTERNAL JAVASCRIPT MODULES
+       ==================================================================== -->
+  <!-- Three.js & OrbitControls -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Leaflet.js -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <!-- Application Logic Modules -->
+  <script src="js/audioAlerts.js"></script>
+  <script src="js/simulationEngine.js"></script>
+  <script src="js/afforestationEngine.js"></script>
+  <script src="js/drishtiCam.js"></script>
+  <script src="js/terrain3d.js"></script>
+  <script src="js/gpsMap.js"></script>
+  <script src="js/analytics.js"></script>
+  <script src="js/judgeDemo.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>

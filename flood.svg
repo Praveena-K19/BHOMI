@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520">
+<defs><linearGradient id="bg" x2="0" y2="1"><stop stop-color="#f4fbff"/><stop offset="1" stop-color="#e9f5ef"/></linearGradient><linearGradient id="water" x2="0" y2="1"><stop stop-color="#9bd8ef"/><stop offset="1" stop-color="#4da6c8"/></linearGradient></defs>
+<rect width="900" height="520" fill="url(#bg)"/>
+<path d="M0 330 Q180 150 350 270 Q520 390 900 175 V520 H0Z" fill="#b8d8bd"/>
+<path d="M0 380 Q180 275 330 360 Q500 455 900 260 L900 520 H0Z" fill="url(#water)"/>
+<path d="M0 410 Q200 320 360 395 T900 300" fill="none" stroke="#fff" stroke-width="7" opacity=".8"/>
+<g fill="#fff" opacity=".75"><circle cx="145" cy="90" r="4"/><circle cx="185" cy="120" r="3"/><circle cx="235" cy="75" r="5"/><circle cx="300" cy="110" r="4"/><circle cx="350" cy="65" r="3"/></g>
+<g fill="#4d8d60"><circle cx="110" cy="315" r="24"/><circle cx="145" cy="295" r="32"/><circle cx="178" cy="315" r="25"/><circle cx="735" cy="275" r="28"/><circle cx="770" cy="250" r="36"/><circle cx="810" cy="280" r="26"/></g>
+<g stroke="#e58b42" stroke-width="8" opacity=".8"><path d="M470 260 L520 330"/><path d="M520 330 L590 360"/><path d="M520 330 L505 400"/></g>
+</svg>
